@@ -1,38 +1,28 @@
 Object.values = Object.values ? Object.values : function(obj) {
-    // if ES6 is supported
-    if (Object.keys) {
-      return Object.keys(object).map(function (key) {
-	       return object[key];
-	    });
-    }
+	var allowedTypes = ["[object String]", "[object Object]", "[object Array]", "[object Function]"];
+	var objType = Object.prototype.toString.call(obj);
 
-    var hasOwnProperty = Object.prototype.hasOwnProperty,
-        hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
-        dontEnums = [
-          'toString',
-          'toLocaleString',
-          'valueOf',
-          'hasOwnProperty',
-          'isPrototypeOf',
-          'propertyIsEnumerable',
-          'constructor'
-        ],
-        dontEnumsLength = dontEnums.length;
-
-    if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.values called on non-object');
-
-    var result = [];
-
-    for (var prop in obj) {
-        if (hasOwnProperty.call(obj, prop)) result.push(obj[prop]);
-    }
-
-    if (hasDontEnumBug) {
-        for (var i=0; i < dontEnumsLength; i++) {
-            if (hasOwnProperty.call(obj, dontEnums[i])) result.push(obj[dontEnums[i]]);
-        }
-    }
-    return result;
+	if(obj === null || typeof obj === "undefined") {
+		throw new TypeError("Cannot convert undefined or null to object");
+	} else if(!~allowedTypes.indexOf(objType)) {
+		return [];
+	} else {
+		// if ES6 is supported
+		if (Object.keys) {
+			return Object.keys(obj).map(function (key) {
+				return obj[key];
+			});
+		}
+		
+		var result = [];
+		for (var prop in obj) {
+			if (obj.hasOwnProperty(prop)) {
+				result.push(obj[prop]);
+			}
+		}
+		
+		return result;
+	}
 };
 
 if (typeof module !== 'undefined' && module.exports) {
