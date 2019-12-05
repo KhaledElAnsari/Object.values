@@ -2,21 +2,21 @@ Object.values = Object.values ? Object.values : function(obj) {
 	var allowedTypes = ["[object String]", "[object Object]", "[object Array]", "[object Function]"];
 	var objType = Object.prototype.toString.call(obj);
 
-	if(obj === null || typeof obj === "undefined") {
+	if (obj == null) { // loose comparision if obj is null or undefined
 		throw new TypeError("Cannot convert undefined or null to object");
-	} else if(!~allowedTypes.indexOf(objType)) {
+	} else if (!~allowedTypes.indexOf(objType)) {
 		return [];
 	} else {
 		// if ES6 is supported
 		if (Object.keys) {
-			return Object.keys(obj).map(function (key) {
+			return Object.keys(obj).map(function(key) {
 				return obj[key];
 			});
 		}
 		
 		var result = [];
 		for (var prop in obj) {
-			if (obj.hasOwnProperty(prop)) {
+			if (obj.hasOwnProperty(prop) && obj.propertyIsEnumerable(prop)) {
 				result.push(obj[prop]);
 			}
 		}
